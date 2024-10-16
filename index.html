@@ -1,0 +1,120 @@
+<html>
+<head>
+
+	<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzaroo Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<link rel='stylesheet' href='css/order.css'>
+	<link rel='stylesheet' href='css/mng-style.css'>
+    <style>        
+    </style>
+	
+</head>
+<body>
+		<!-- SECCION Estadísticas -->
+<div class='stats-section' id="stats-section">
+  <div class="header">
+    <h1>Estadísticas</h1>
+  </div>
+  
+  
+  <div class="category">
+    <h3 class="datos">Datos</h3>
+  </div>
+  
+<!--
+  <div class="tabs">			 
+	<div class="tab active" data-period="total">Total</div>
+    <div class="tab inactive" data-period="diario">Diario</div>
+    <div class="tab inactive" data-period="semanal">Semanal</div>
+    <div class="tab inactive" data-period="mensual">Mensual</div>
+  </div>
+-->
+
+  <div class="stats-grid">
+  <div class="stat-card order">
+    <p class="orders">Total de Ordenes</p>
+    <h2 id="orders-data"></h2> <!--Información obtenida de base de datos-->
+    <p class="orders-data"></p>
+  </div>
+  <div class="stat-card earn">
+    <p class="income">Total de ingresos</p>
+    <h2 id="income-data"></h2><!--Información obtenida de base de datos-->
+    <p class="income-data"></p>
+  </div>
+</div>
+ 
+            
+  <div class="category">
+    <h3 calss="datos">Gráficos</h3>
+  </div>
+</div>
+
+
+    <!-- SECCION Ordenes -->	 
+    <div class='order-section' id="order-section" style="display: none;">
+	 <div class="header">
+    <h1>Ordenes</h1>
+  </div>
+        <header id='order-header'>			
+            <div class="container">
+                <div id="cuenta-regresiva-recarga"></div><br>
+                <input class="input Search" type="text" id="inputSearch" placeholder="Buscar...">
+            </div>
+            <div class="actions">
+                <button id="btn-actualizar">Actualizar</button>
+                <button id="btn-filtro-az">Nombre</button>
+                <button id="btn-filtro-fecha">Fecha</button>
+                <button id="btn-filtro-entrega">Entrega</button>
+            </div>
+        </header>
+
+       <div class="container">
+  <!-- New container for data from Google App Script -->
+  <div id="google-app-script-data" class="row"></div>
+  <!-- Container for loading message -->
+  <div id="loading-message" style="display: none;">Cargando...</div>
+</div>
+    </div>
+		
+		<!-- SECCION  En desarrolo 1-->
+			<div class='develop1-section' id="develop1-section">
+  <div class="header">
+    <h1>En desarrollo...</h1>
+  </div>
+</div>
+		
+		<!-- SECCION  En desarrollo 2-->
+			<div class='develop2-section' id="develop2-section">
+  <div class="header">
+    <h1>En desarrollo...</h1>
+  </div>
+</div>
+	
+		 <div class="footer">
+	  <nav>
+		<ul>
+		  <li><a href="#" class="footer-link" data-section="order-section"><i class="fas fa-user"></i></a></li>
+		  <li><a href="#" class="footer-link" data-section="stats-section" class="active"><i class="fas fa-chart-bar"></i></a></li>
+		  <li><a href="#" class="footer-link" data-section="develop1-section"><i class="fas fa-gift"></i></a></li>
+		  <li><a href="#" class="footer-link" data-section="develop2-section"><i class="fas fa-bullseye"></i></a></li>
+		</ul>
+	  </nav>
+	</div>
+	
+	
+	<script src='js/order.js'></script>	
+	<script src='js/menu-btn.js'></script>
+	<script src='js/tab.js'></script>
+	<script src='js/estadistic.js'></script>
+
+<script>
+
+</script>
+	
+	
+</body>
+</html>
