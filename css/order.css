@@ -123,5 +123,32 @@
                 -webkit-overflow-scrolling: touch;
             }
         }		
-		
-		
+
+
+		.row {
+        display: flex; /* Habilita el modelo de caja flexible */
+        flex-direction: column; /* Alinea los elementos en una columna */
+        align-items: center; /* Centra los elementos horizontalmente */
+        }
+		/*SKELETON PRELOADER*/
+
+        .skeleton {
+            align-items: center;
+            background-color: #e0e0e0; /* Color de fondo para el efecto skeleton */
+            border-radius: 4px; /* Bordes redondeados */
+            height: 30px; /* Altura del esqueleto */           
+            margin: 10px 0; /* Espaciado entre los elementos */
+            animation: pulse 1.5s infinite; /* Animación de pulso */
+          }
+          
+          @keyframes pulse {
+            0% {
+              background-color: #e0e0e0;
+            }
+            50% {
+              background-color: #d0d0d0; /* Color más oscuro durante la animación */
+            }
+            100% {
+              background-color: #e0e0e0;
+            }
+          }

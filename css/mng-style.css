@@ -1,7 +1,6 @@
 body {
             font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-           
+            background-color: #f5f5f5;           
 			max-width: 500px;
 			margin: 0 auto;
             padding: 20px;
@@ -17,7 +16,7 @@ body {
 		
 		.category{
 		    margin-left: 5%;
-			margin- button: 1px;
+			margin-bottom: 1px;
             font-size: 24px;
             color: #333;		      
 		}	
@@ -75,28 +74,28 @@ body {
             margin: 5px 0;
         }
         .stat-card.order {
-			margin-right: 0;
-            background-color: #ff3100ff;
+		  margin-right: 0;
+          background-color: #ff3100ff;
         }
         .stat-card.earn {
-			margin-left: 0;		
-            background-color: #40a841;
+		  margin-left: 0;		
+          background-color: #40a841;
         }
         .stat-card.energy-burn {
-            background-color: #ff9f43;
+          background-color: #ff9f43;
         }
         .stat-card.steps {
-            background-color: #54a0ff;
+          background-color: #54a0ff;
         }
         .stat-card.running {
-            background-color: #341f97;
+          background-color: #341f97;
         }
         .stat-card.cycling {
-            background-color: #1dd1a1;
+          background-color: #1dd1a1;
         }
 		
 		#order-section{
-		margin: 0;
+		  margin: 0;
 		}
 		
 		.stats-section, .order-section, .develop1-section, .develop2-section {
@@ -120,50 +119,54 @@ body {
 		.develop1-section, .develop2-section {
 		  background-color: #fff;
 		}
-						
-			 .footer {
-		  position: fixed;
-		  bottom: 5px;
-		  left: 50%;
-		  transform: translateX(-50%);
-		  width: 95%;
-		  background-color: #fff;
-		  border: 1px solid #dcdde1;
-		  border-radius: 20px 20px 20px 20px;
-		  padding: 17px 0;
-		  text-align: center;
-		}
 		
-		.footer nav ul {
-		  list-style: none;
-		  margin: 0;
-		  padding: 0;
-		  display: flex;
-		  justify-content: space-around;
-		}
-		
-		.footer nav li {
-		  margin: 0 10px;
-		}
-		
-		.footer nav a {
-			
-		  text-decoration: none;
-		}
-		
-		.footer nav a.active {
-		  color: #3b3b98;  
-		  transform: translateY(-2px);
-		  transition: all 0.2s ease-in-out;
-		}
-		
-		.footer nav i {
-		  font-size: 24px;
-		  color: #333;
-		}
-		
-		.footer i.active {
-		color: #ff3100ff;
-		transform: translateY(-5px);
-		transition: all 0.2s ease-in-out;
-		}
+		.footer {
+            position: fixed;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #fff;
+            border: 1px solid #dcdde1;
+            border-radius: 20px;
+            padding: 17px 0;
+            text-align: center;
+            z-index: 1000; /* Asegúrate de que esté en la parte superior */
+        }
+
+        .footer nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .footer nav li {
+            margin: 0 10px;
+        }
+
+        .footer nav a {
+            text-decoration: none;
+            color: #333; /* Color por defecto de los enlaces */
+            transition: color 0.2s ease-in-out; /* Transición suave para el color */
+        }
+               
+
+        .footer nav i {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .footer i.active {
+            font-size: 30px;
+            color: #ff3100; /* Color del icono activo */
+            transform: translateY(-10px);
+            transition: all 0.2s ease-in-out;       
+            
+        }
+
+        .footer nav a:hover {
+            color: #ff3100; /* Cambia el color al pasar el ratón */
+        }
+

@@ -1,5 +1,5 @@
-
-	// Comprobar si hay información guardada en el almacenamiento local
+  
+  // Comprobar si hay información guardada en el almacenamiento local
 if (!localStorage.getItem('usuario') || localStorage.getItem('usuario') === '') {
   // Redirigir al usuario a la página de inicio de sesión
   window.location.href = 'login.html';
@@ -274,3 +274,40 @@ setInterval(() => {
     tiempoRecarga = 3 * 60; // Resetear el tiempo de recarga a 10 minutos
   }
 }, 1000);
+
+
+// Skeleton Preloader
+document.addEventListener("DOMContentLoaded", function() {
+  const row = document.querySelector('.row');
+  const loadingMessage = document.getElementById('loading-message');
+
+  // Mostrar el mensaje de carga
+  loadingMessage.style.display = 'block';
+
+  // Simular carga de datos
+  setTimeout(() => {
+    loadingMessage.style.display = 'none'; // Ocultar mensaje de carga
+
+    // Limpiar el contenido anterior
+    row.innerHTML = '';
+
+    // Establecer un ancho fijo para los skeletons
+    const fixedWidth = '300px'; // Ancho fijo deseado
+
+    // Simular la creación de 4 grupos de 3 elementos de datos
+    for (let j = 0; j < 5; j++) { // Repetir 4 veces 
+      for (let i = 0; i < 5; i++) { // Crear 3 skeletons por grupo
+        const skeletonDiv = document.createElement('div');      
+        skeletonDiv.className = 'skeleton';
+        skeletonDiv.style.width = fixedWidth; // Ancho fijo
+        skeletonDiv.style.alignItems = 'center'; // Ancho fijo
+        row.appendChild(skeletonDiv);
+      }
+      // Añadir un separador entre grupos, si es necesario
+      const separator = document.createElement('div');
+      separator.style.height = '20px'; // Espacio entre grupos
+      row.appendChild(separator);
+    }
+  }, 3000); // Simula una carga de 3 segundos
+});
+	

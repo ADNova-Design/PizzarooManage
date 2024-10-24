@@ -4,13 +4,12 @@
 	<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizzaroo Admin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 	<link rel='stylesheet' href='css/order.css'>
 	<link rel='stylesheet' href='css/mng-style.css'>
-    <style>        
-    </style>
 	
 </head>
 <body>
@@ -24,15 +23,13 @@
   <div class="category">
     <h3 class="datos">Datos</h3>
   </div>
-  
-<!--
+ 
   <div class="tabs">			 
 	<div class="tab active" data-period="total">Total</div>
     <div class="tab inactive" data-period="diario">Diario</div>
     <div class="tab inactive" data-period="semanal">Semanal</div>
     <div class="tab inactive" data-period="mensual">Mensual</div>
   </div>
--->
 
   <div class="stats-grid">
   <div class="stat-card order">
@@ -49,7 +46,7 @@
  
             
   <div class="category">
-    <h3 calss="datos">Gráficos</h3>
+    <h3 class="datos">Gráficos</h3>
   </div>
 </div>
 
@@ -93,28 +90,57 @@
     <h1>En desarrollo...</h1>
   </div>
 </div>
-	
-		 <div class="footer">
-	  <nav>
-		<ul>
-		  <li><a href="#" class="footer-link" data-section="order-section"><i class="fas fa-user"></i></a></li>
-		  <li><a href="#" class="footer-link" data-section="stats-section" class="active"><i class="fas fa-chart-bar"></i></a></li>
-		  <li><a href="#" class="footer-link" data-section="develop1-section"><i class="fas fa-gift"></i></a></li>
-		  <li><a href="#" class="footer-link" data-section="develop2-section"><i class="fas fa-bullseye"></i></a></li>
-		</ul>
-	  </nav>
-	</div>
-	
-	
+
+<div class="footer">
+  <nav>
+      <ul>
+          <li><a href="#" class="footer-link" data-section="order-section"><i class="fas fa-user"></i></a></li>
+          <li><a href="#" class="footer-link active" data-section="stats-section"><i class="fas fa-chart-bar"></i></a></li>
+          <li><a href="#" class="footer-link" data-section="develop1-section"><i class="fas fa-gift"></i></a></li>
+          <li><a href="#" class="footer-link" data-section="develop2-section"><i class="fas fa-bullseye"></i></a></li>
+      </ul>
+  </nav>
+</div>
+
 	<script src='js/order.js'></script>	
 	<script src='js/menu-btn.js'></script>
 	<script src='js/tab.js'></script>
 	<script src='js/estadistic.js'></script>
+  <script>
 
-<script>
+async function fetchIncomeData() {
+  try {
+    // Realiza la solicitud para obtener los datos desde el script de Google Apps
+    const response = await fetch('https://script.google.com/macros/s/AKfycbxoY6t07GMxfF7dCAArrINCXgXUc4tSwou48km1rmAPVmAsXVKODSceR5v9EYodUoVm/exec');
+    
+    // Verificar si la respuesta es correcta
+    if (!response.ok) {
+      throw new Error('Error en la red: ' + response.statusText);
+    }
+
+    // Convertir la respuesta en formato JSON
+    const data = await response.json();
+    
+    // Agregar un console.log para ver lo que se recibe
+    console.log("Datos recibidos:", data);
+    
+    // Asegúrate de que el valor recibido sea un número
+    if (data.income !== undefined && !isNaN(data.income)) {
+      // Mostrar el valor en el h2, formateado a 2 decimales
+      document.getElementById('income-data').textContent = data.income.toFixed(2);
+    } else {
+      console.error("El valor recibido no es un número:", data.income);
+    } 
+    
+  } catch (error) { 
+    console.error("Error al obtener los datos:", error);
+ }
+}
+
+// Llama a la función para obtener los datos al cargar la página
+window.onload = fetchIncomeData;
 
 </script>
-	
 	
 </body>
 </html>
