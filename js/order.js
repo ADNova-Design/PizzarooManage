@@ -240,8 +240,6 @@ function actualizarCuentaRegresiva(cuentaRegresiva, horaEntrega, fecha) {
   }, 1000);
 }
 
-
-
 // Call the cargarDatos function when the page loads
 cargarDatos();
 

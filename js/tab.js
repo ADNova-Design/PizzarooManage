@@ -1,49 +1,41 @@
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicializar la pestaña activa
+  const tabs = document.querySelectorAll('.tab');
+  const statsGrids = document.querySelectorAll('.stats-grid');
 
-//* TABS
-// seleccionamos todas las tabs
-const tabs = document.querySelectorAll('.tab');
+  // Función para mostrar la pestaña activa
+  function showTab(period) {
+      // Ocultar todas las secciones de estadísticas
+      statsGrids.forEach(grid => {
+          grid.style.display = 'none'; // Asegúrate de ocultar todas las secciones
+      });
 
-// seleccionamos la tab de diarios y la mostramos como activa por defecto
-const defaultTab = document.querySelector('[data-period="total"]');
-defaultTab.classList.add('active');
+      // Mostrar solo la sección correspondiente a la pestaña activa
+      const activeGrid = document.getElementById(period);
+      if (activeGrid) {
+          activeGrid.style.display = 'grid'; // Usa 'grid' para que se aplique el CSS de cuadrícula
+      }
 
-// agregamos un evento de clic a cada tab
-tabs.forEach((tab) => {
-  tab.addEventListener('click', (e) => {
-    // evitamos que la tab se comporte como un enlace normal
-    e.preventDefault();
+      // Cambiar el estado de las pestañas
+      tabs.forEach(tab => {
+          if (tab.getAttribute('data-period') === period) {
+              tab.classList.add('active');
+              tab.classList.remove('inactive');
+          } else {
+              tab.classList.remove('active');
+              tab.classList.add('inactive');
+          }
+      });
+  }
 
-    // ocultamos todas las tabs activas
-    tabs.forEach((tab) => {
-      tab.classList.remove('active');
-      tab.classList.add('inactive');
-    });
+  // Mostrar la pestaña "total" al cargar la página
+  showTab('total');
 
-    // mostramos la tab seleccionada
-    tab.classList.remove('inactive');
-    tab.classList.add('active');
-  });
-});
-
-const navLinks = document.querySelectorAll('.footer nav a');
-const navIcons = document.querySelectorAll('.footer nav i');
-
-navLinks.forEach((link) => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    navLinks.forEach((otherLink) => {
-      otherLink.classList.remove('active');
-    });
-    link.classList.add('active');
-  });
-});
-
-navIcons.forEach((icon) => {
-  icon.addEventListener('click', (e) => {
-    e.preventDefault();
-    navIcons.forEach((otherIcon) => {
-      otherIcon.classList.remove('active');
-    });
-    icon.classList.add('active');
+  // Añadir event listeners a las pestañas
+  tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+          const period = this.getAttribute('data-period');
+          showTab(period);
+      });
   });
 });

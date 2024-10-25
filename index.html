@@ -1,6 +1,5 @@
 <html>
 <head>
-
 	<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizzaroo Admin</title>
@@ -31,9 +30,9 @@
     <div class="tab inactive" data-period="mensual">Mensual</div>
   </div>
 
-  <div class="stats-grid">
+  <div class="stats-grid" id="total">
   <div class="stat-card order">
-    <p class="orders">Total de Ordenes</p>
+    <p class="orders">Total de Órdenes</p>
     <h2 id="orders-data"></h2> <!--Información obtenida de base de datos-->
     <p class="orders-data"></p>
   </div>
@@ -42,19 +41,53 @@
     <h2 id="income-data"></h2><!--Información obtenida de base de datos-->
     <p class="income-data"></p>
   </div>
-</div>
- 
-            
-  <div class="category">
-    <h3 class="datos">Gráficos</h3>
-  </div>
-</div>
+</div> 
 
+<div class="stats-grid" id="diario">
+  <div class="stat-card order">
+    <p class="orders">Órdenes Diarias</p>
+    <h2 id="orders-daily-data"></h2> <!--Información obtenida de base de datos-->
+    <p class="orders-data"></p>
+  </div>
+  <div class="stat-card earn">
+    <p class="income">Ingresos Diarios</p>
+    <h2 id="income-daily-data"></h2><!--Información obtenida de base de datos-->
+    <p class="income-data"></p>
+  </div>
+</div> 
+
+<div class="stats-grid" id="semanal">
+  <div class="stat-card order">
+    <p class="orders">Órdenes Semanales</p>
+    <h2 id="orders-week-data"></h2> <!--Información obtenida de base de datos-->
+    <p class="orders-data"></p>
+  </div>
+  <div class="stat-card earn">
+    <p class="income">Ingresos Semanales</p>
+    <h2 id="income-week-data"></h2><!--Información obtenida de base de datos-->
+    <p class="income-data"></p>
+  </div>
+</div> 
+
+<div class="stats-grid" id="mensual">
+  <div class="stat-card order">
+    <p class="orders">Órdenes Mensuales</p>
+    <h2 id="orders-month-data"></h2> <!--Información obtenida de base de datos-->
+    <p class="orders-data"></p>
+  </div>
+  <div class="stat-card earn">
+    <p class="income">Ingresos Mensuales</p>
+    <h2 id="income-month-data"></h2><!--Información obtenida de base de datos-->
+    <p class="income-data"></p>
+  </div>
+</div> 
+              
+</div>
 
     <!-- SECCION Ordenes -->	 
-    <div class='order-section' id="order-section" style="display: none;">
+    <div class='order-section' id="order-section">
 	 <div class="header">
-    <h1>Ordenes</h1>
+    <h1>Órdenes</h1>
   </div>
         <header id='order-header'>			
             <div class="container">
@@ -106,41 +139,6 @@
 	<script src='js/menu-btn.js'></script>
 	<script src='js/tab.js'></script>
 	<script src='js/estadistic.js'></script>
-  <script>
-
-async function fetchIncomeData() {
-  try {
-    // Realiza la solicitud para obtener los datos desde el script de Google Apps
-    const response = await fetch('https://script.google.com/macros/s/AKfycbxoY6t07GMxfF7dCAArrINCXgXUc4tSwou48km1rmAPVmAsXVKODSceR5v9EYodUoVm/exec');
-    
-    // Verificar si la respuesta es correcta
-    if (!response.ok) {
-      throw new Error('Error en la red: ' + response.statusText);
-    }
-
-    // Convertir la respuesta en formato JSON
-    const data = await response.json();
-    
-    // Agregar un console.log para ver lo que se recibe
-    console.log("Datos recibidos:", data);
-    
-    // Asegúrate de que el valor recibido sea un número
-    if (data.income !== undefined && !isNaN(data.income)) {
-      // Mostrar el valor en el h2, formateado a 2 decimales
-      document.getElementById('income-data').textContent = data.income.toFixed(2);
-    } else {
-      console.error("El valor recibido no es un número:", data.income);
-    } 
-    
-  } catch (error) { 
-    console.error("Error al obtener los datos:", error);
- }
-}
-
-// Llama a la función para obtener los datos al cargar la página
-window.onload = fetchIncomeData;
-
-</script>
 	
 </body>
 </html>

@@ -1,39 +1,45 @@
-    // seleccionamos la sección de estadísticas y la mostramos como activa por defecto
+document.addEventListener('DOMContentLoaded', function() {
+    // Seleccionamos la sección de estadísticas y la mostramos como activa por defecto
     const statsSection = document.getElementById('stats-section');
-    statsSection.style.display = 'block';
+    statsSection.classList.add('show');
 
-    // seleccionamos el enlace del menú bottom que corresponde a la sección de estadísticas y lo mostramos como activo
+    // Seleccionamos el enlace del menú inferior que corresponde a la sección de estadísticas y lo mostramos como activo
     const statsLink = document.querySelector('.footer-link[data-section="stats-section"]');
-    statsLink.classList.add('active');
+    statsLink.classList.add('active'); // Agregar 'active' al enlace de estadísticas
+    statsLink.querySelector('i').classList.add('active'); // Agregar 'active' al icono de estadísticas
 
-    // seleccionamos todos los enlaces del menú bottom
+    // Seleccionamos todos los enlaces del menú inferior
     const footerLinks = document.querySelectorAll('.footer-link');
-
-    // agregamos un evento de clic a cada enlace
+    
+    // Agregamos un evento de clic a cada enlace
     footerLinks.forEach((link) => {
         link.addEventListener('click', (e) => {
-            // evitamos que el enlace se comporte como un enlace normal
-            e.preventDefault();
+            e.preventDefault(); // Evitar el comportamiento predeterminado del enlace
 
-            // obtenemos el ID de la sección que se debe mostrar
+            // Obtenemos el ID de la sección que se debe mostrar
             const sectionId = link.getAttribute('data-section');
-
-            // seleccionamos todas las secciones
             const sections = document.querySelectorAll('.stats-section, .order-section, .develop1-section, .develop2-section');
 
-            // ocultamos todas las secciones
+            // Ocultamos todas las secciones
             sections.forEach((section) => {
-                section.style.display = 'none';
+                section.classList.remove('show'); // Ocultar la sección
+                section.classList.add('hide'); // Agregar clase 'hide'
             });
 
-            // mostramos la sección seleccionada
+            // Mostramos la sección seleccionada
             const selectedSection = document.getElementById(sectionId);
-            selectedSection.style.display = 'block';
+            selectedSection.classList.remove('hide'); // Quitar la clase 'hide'
+            selectedSection.classList.add('show'); // Agregar la clase 'show'
 
-            // eliminar la clase 'active' de todos los enlaces y agregarla solo al enlace clicado
+            // Eliminamos la clase 'active' de todos los enlaces y sus iconos
             footerLinks.forEach((footerLink) => {
-                footerLink.classList.remove('active');
+                footerLink.classList.remove('active'); // Eliminar 'active' del enlace
+                footerLink.querySelector('i').classList.remove('active'); // Eliminar 'active' del icono
             });
-            link.classList.add('active');
+
+            // Agregar 'active' al enlace clicado y a su icono
+            link.classList.add('active'); // Agregar 'active' al enlace clicado
+            link.querySelector('i').classList.add('active'); // Agregar 'active' al icono clicado
         });
     });
+});
