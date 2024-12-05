@@ -1,5 +1,17 @@
+if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+
+function mostrarNotificacion(titulo, mensaje) {
+  if (Notification.permission === "granted") {
+    new Notification(titulo, {
+      body: mensaje,
+      icon: 'icon.png' // Cambia esto por la ruta a tu icono
+    });
+  }
+}
   
-  // Comprobar si hay información guardada en el almacenamiento local
+ // Comprobar si hay información guardada en el almacenamiento local
 if (!localStorage.getItem('usuario') || localStorage.getItem('usuario') === '') {
   // Redirigir al usuario a la página de inicio de sesión
   window.location.href = 'login.html';
@@ -36,61 +48,70 @@ searchInput.addEventListener('input', function() {
   }
 });
 
+let ultimaFecha = null; // Variable para almacenar la última fecha de carga
 
-// Define the cargarDatos function
 function cargarDatos() {
-// Cargar datos desde Google App Script
-fetch('https://script.google.com/macros/s/AKfycbxoY6t07GMxfF7dCAArrINCXgXUc4tSwou48km1rmAPVmAsXVKODSceR5v9EYodUoVm/exec')
-  .then(response => response.json())
-  .then(data => {
-    // Sort data by date in descending order (newest first)
-    data.sort((a, b) => new Date(b.Fecha) - new Date(a.Fecha));
-    
-    // Display the data from Google App Script
-    const googleAppScriptDataContainer = document.getElementById('google-app-script-data');
-    googleAppScriptDataContainer.innerHTML = '';
-    data.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'card mb-3';
-      const fecha = new Date(item.Fecha);
-      const fechaFormat = fecha.toLocaleString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
-      const horaEntrega = item['Hora de entrega'];
-      const cuentaRegresiva = document.createElement('div');
-      cuentaRegresiva.className = 'cuenta-regresiva';   
-	 
-      const cardBody = document.createElement('div');
-      cardBody.className = 'card-body';      	
-      cardBody.innerHTML = `
-        <h5 class="card-title">${item.Nombre}</h5>
-        <p class="card-text">
-          <strong>Fecha:</strong> ${fechaFormat}<br>
-          <strong>Código:</strong> ${item.Código}<br>
-          <strong>Teléfono:</strong> ${item.Teléfono}<br>
-          <strong>Dirección:</strong> ${item.Dirección}<br>
-          <strong>Punto de referencia:</strong> ${item['Punto de referencia']}<br>
-          <strong>Hora de entrega:</strong> ${horaEntrega}<br>
-          <strong>SMS:</strong> ${item.SMS}<br>
-          <strong>Productos:</strong> ${item.Productos}<br><br>
-          <strong>TOTAL:</strong> <strong>${item.Total}</strong><br>
-		  <br>
+  // Cargar datos desde Google App Script
+  fetch('https://script.google.com/macros/s/AKfycbxoY6t07GMxfF7dCAArrINCXgXUc4tSwou48km1rmAPVmAsXVKODSceR5v9EYodUoVm/exec')
+    .then(response => response.json())
+    .then(data => {
+      // Ordenar los datos por fecha en orden descendente
+      data.sort((a, b) => new Date(b.Fecha) - new Date(a.Fecha));
+      
+      // Mostrar los datos desde Google App Script
+      const googleAppScriptDataContainer = document.getElementById('google-app-script-data');
+      googleAppScriptDataContainer.innerHTML = '';
+
+      data.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card mb-3';
+        const fecha = new Date(item.Fecha);
+        const fechaFormat = fecha.toLocaleString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        });
+        const horaEntrega = item['Hora de entrega'];
+        const cuentaRegresiva = document.createElement('div');
+        cuentaRegresiva.className = 'cuenta-regresiva';   
+
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';      	
+        cardBody.innerHTML = `
+          <h5 class="card-title">${item.Nombre}</h5>
+          <p class="card-text">
+            <strong>Fecha:</strong> ${fechaFormat}<br>
+            <strong>Código:</strong> ${item.Código}<br>
+            <strong>Teléfono:</strong> ${item.Teléfono}<br>
+            <strong>Dirección:</strong> ${item.Dirección}<br>
+            <strong>Punto de referencia:</strong> ${item['Punto de referencia']}<br>
+            <strong>Hora de entrega:</strong> ${horaEntrega}<br>
+            <strong>SMS:</strong> ${item.SMS}<br>
+            <strong>Productos:</strong> ${item.Productos}<br><br>
+            <strong>TOTAL:</strong> <strong>${item.Total}</strong><br>
+            <br>
           </p>
-      `;
-      cardBody.appendChild(cuentaRegresiva);
-      card.appendChild(cardBody);
-      googleAppScriptDataContainer.appendChild(card);
-      actualizarCuentaRegresiva(cuentaRegresiva, horaEntrega, item.Fecha);
-    });
-    ordenarPorEntrega(); // Llamar a la función para ordenar los datos por tiempo restante de entrega
-  })
-  .catch(error => console.error('Error:', error));
+        `;
+        cardBody.appendChild(cuentaRegresiva);
+        card.appendChild(cardBody);
+        googleAppScriptDataContainer.appendChild(card);
+        actualizarCuentaRegresiva(cuentaRegresiva, horaEntrega, item.Fecha);
+
+        // Verificar si hay una nueva entrada
+        if (!ultimaFecha || new Date(item.Fecha) > ultimaFecha) {
+          mostrarNotificacion("Nueva Orden", `Se ha recibido una nueva orden de ${item.Nombre}`);
+        }
+      });
+
+      // Actualizar la última fecha
+      ultimaFecha = new Date(data[0].Fecha);
+      ordenarPorEntrega(); // Llamar a la función para ordenar los datos por tiempo restante de entrega
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 // **Ordenar datos**
@@ -309,3 +330,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }, 3000); // Simula una carga de 3 segundos
 });
 	
+document.addEventListener("DOMContentLoaded", function() {
+  // Llamar a la función cargarDatos cuando el DOM esté completamente cargado
+  cargarDatos();
+});
