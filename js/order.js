@@ -37,62 +37,6 @@ searchInput.addEventListener('input', function() {
 });
 
 
-// Define the cargarDatos function
-function cargarDatos() {
-// Cargar datos desde Google App Script
-fetch('https://script.google.com/macros/s/AKfycbxoY6t07GMxfF7dCAArrINCXgXUc4tSwou48km1rmAPVmAsXVKODSceR5v9EYodUoVm/exec')
-  .then(response => response.json())
-  .then(data => {
-    // Sort data by date in descending order (newest first)
-    data.sort((a, b) => new Date(b.Fecha) - new Date(a.Fecha));
-    
-    // Display the data from Google App Script
-    const googleAppScriptDataContainer = document.getElementById('google-app-script-data');
-    googleAppScriptDataContainer.innerHTML = '';
-    data.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'card mb-3';
-      const fecha = new Date(item.Fecha);
-      const fechaFormat = fecha.toLocaleString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
-      const horaEntrega = item['Hora de entrega'];
-      const cuentaRegresiva = document.createElement('div');
-      cuentaRegresiva.className = 'cuenta-regresiva';   
-	 
-      const cardBody = document.createElement('div');
-      cardBody.className = 'card-body';      	
-      cardBody.innerHTML = `
-        <h5 class="card-title">${item.Nombre}</h5>
-        <p class="card-text">
-          <strong>Fecha:</strong> ${fechaFormat}<br>
-          <strong>Código:</strong> ${item.Código}<br>
-          <strong>Teléfono:</strong> ${item.Teléfono}<br>
-          <strong>Dirección:</strong> ${item.Dirección}<br>
-          <strong>Punto de referencia:</strong> ${item['Punto de referencia']}<br>
-          <strong>Hora de entrega:</strong> ${horaEntrega}<br>
-          <strong>SMS:</strong> ${item.SMS}<br>
-          <strong>Productos:</strong> ${item.Productos}<br><br>
-          <strong>TOTAL:</strong> <strong>${item.Total}</strong><br>
-		  <br>
-          </p>
-      `;
-      cardBody.appendChild(cuentaRegresiva);
-      card.appendChild(cardBody);
-      googleAppScriptDataContainer.appendChild(card);
-      actualizarCuentaRegresiva(cuentaRegresiva, horaEntrega, item.Fecha);
-    });
-    ordenarPorEntrega(); // Llamar a la función para ordenar los datos por tiempo restante de entrega
-  })
-  .catch(error => console.error('Error:', error));
-}
-
 // **Ordenar datos**
 // Variables para almacenar el orden actual de los datos
 let ordenNombre = 'asc';
@@ -103,95 +47,205 @@ function ordenarPorNombre() {
   const cards = googleAppScriptDataContainer.children;
   const arrayCards = Array.from(cards);
   arrayCards.sort((a, b) => {
-    const nombreA = a.querySelector('.card-title').textContent;
-    const nombreB = b.querySelector('.card-title').textContent;
+    const nombreA = a.querySelector('h3').textContent;
+    const nombreB = b.querySelector('h3').textContent;
     if (ordenNombre === 'asc') {
       return nombreA.localeCompare(nombreB);
     } else {
       return nombreB.localeCompare(nombreA);
     }
   });
+  
+  // Mostrar indicador visual del orden
+  const button = document.getElementById('btn-filtro-az');
+  const icon = button.querySelector('i');
+  icon.className = ordenNombre === 'asc' ? 'fas fa-sort-alpha-down mr-2 text-pizza-red' : 'fas fa-sort-alpha-up mr-2 text-pizza-red';
+  
   googleAppScriptDataContainer.innerHTML = '';
   arrayCards.forEach(card => {
     googleAppScriptDataContainer.appendChild(card);
   });
   ordenNombre = ordenNombre === 'asc' ? 'desc' : 'asc';
 }
+
 // Función para ordenar los datos por fecha
 function ordenarPorFecha() {
   const cards = googleAppScriptDataContainer.children;
   const arrayCards = Array.from(cards);
   arrayCards.sort((a, b) => {
-    const fechaA = a.querySelector('.card-text').textContent.match(/Fecha: (.*)/)[1];
-    const fechaB = b.querySelector('.card-text').textContent.match(/Fecha: (.*)/)[1];
-    const fechaAFormat = new Date(fechaA);
-    const fechaBFormat = new Date(fechaB);
+    // Obtener el texto de la fecha buscando primero el contenedor
+    const fechaDivA = Array.from(a.querySelectorAll('.text-xs.text-gray-400')).find(el => el.textContent === 'Fecha de Pedido').parentElement;
+    const fechaDivB = Array.from(b.querySelectorAll('.text-xs.text-gray-400')).find(el => el.textContent === 'Fecha de Pedido').parentElement;
+    
+    const fechaTextoA = fechaDivA.querySelector('.text-sm.font-medium').textContent.trim();
+    const fechaTextoB = fechaDivB.querySelector('.text-sm.font-medium').textContent.trim();
+    
+    // Convertir el formato DD/MM/YYYY, HH:mm:ss a objeto Date
+    const [fechaA, horaA] = fechaTextoA.split(', ');
+    const [diaA, mesA, yearA] = fechaA.split('/');
+    const fechaObjetoA = new Date(`${yearA}-${mesA}-${diaA}T${horaA}`);
+
+    const [fechaB, horaB] = fechaTextoB.split(', ');
+    const [diaB, mesB, yearB] = fechaB.split('/');
+    const fechaObjetoB = new Date(`${yearB}-${mesB}-${diaB}T${horaB}`);
+    
     if (ordenFecha === 'asc') {
-      return fechaAFormat.getTime() - fechaBFormat.getTime();
+      return fechaObjetoA - fechaObjetoB;
     } else {
-      return fechaBFormat.getTime() - fechaAFormat.getTime();
+      return fechaObjetoB - fechaObjetoA;
     }
   });
+  
+  // Mostrar indicador visual del orden
+  const button = document.getElementById('btn-filtro-fecha');
+  const icon = button.querySelector('i');
+  icon.className = ordenFecha === 'asc' ? 'fas fa-calendar-alt mr-2 text-pizza-red' : 'fas fa-calendar mr-2 text-pizza-red';
+  
   googleAppScriptDataContainer.innerHTML = '';
   arrayCards.forEach(card => {
     googleAppScriptDataContainer.appendChild(card);
   });
   ordenFecha = ordenFecha === 'asc' ? 'desc' : 'asc';
 }
-// Function to sort data by remaining time for delivery
-function ordenarPorEntrega() {
-  const cards = googleAppScriptDataContainer.children;
-  const arrayCards = Array.from(cards);
-  arrayCards.sort((a, b) => {
-    const cuentaRegresivaA = a.querySelector('.cuenta-regresiva');
-    const cuentaRegresivaB = b.querySelector('.cuenta-regresiva');
-    let tiempoA, tiempoB;
 
-    if (cuentaRegresivaA && cuentaRegresivaA.textContent && cuentaRegresivaA.textContent.includes(',')) {
-      tiempoA = cuentaRegresivaA.textContent.trim().split(', ');
-      if (tiempoA.length < 3) {
-        tiempoA = ['0', '0', '0'];
-      }
-    } else {
-      tiempoA = ['0', '0', '0'];
-    }
+// Agregar eventos a los botones de filtrado con feedback visual
+document.getElementById('btn-filtro-az').addEventListener('click', () => {
+  ordenarPorNombre();
+  showToast(ordenNombre === 'asc' ? 'Ordenando nombres de A a Z' : 'Ordenando nombres de Z a A', 'info');
+});
 
-    if (cuentaRegresivaB && cuentaRegresivaB.textContent && cuentaRegresivaB.textContent.includes(',')) {
-      tiempoB = cuentaRegresivaB.textContent.trim().split(', ');
-      if (tiempoB.length < 3) {
-        tiempoB = ['0', '0', '0'];
-      }
-    } else {
-      tiempoB = ['0', '0', '0'];
-    }
+document.getElementById('btn-filtro-fecha').addEventListener('click', () => {
+  ordenarPorFecha();
+  showToast(ordenFecha === 'asc' ? 'Ordenando por fecha más antigua' : 'Ordenando por fecha más reciente', 'info');
+});
 
-    const horasA = parseInt(tiempoA[0].split(' ')[0]);
-    const minutosA = parseInt(tiempoA[1].split(' ')[0]);
-    const segundosA = parseInt(tiempoA[2].split(' ')[0]);
-    const horasB = parseInt(tiempoB[0].split(' ')[0]);
-    const minutosB = parseInt(tiempoB[1].split(' ')[0]);
-    const segundosB = parseInt(tiempoB[2].split(' ')[0]);
-    const totalA = horasA * 3600 + minutosA * 60 + segundosA;
-    const totalB = horasB * 3600 + minutosB * 60 + segundosB;
+// Define the cargarDatos function
+function cargarDatos() {
+  // Mostrar el mensaje de carga y los skeletons
+  const loadingMessage = document.getElementById('loading-message');
+  const container = document.getElementById('google-app-script-data');
+  loadingMessage.classList.remove('hidden');
+  
+  // Limpiar el contenedor y agregar skeletons
+  container.innerHTML = '';
+  for(let i = 0; i < 6; i++) { // Mostrar 6 skeletons
+    const skeletonCard = document.createElement('div');
+    skeletonCard.className = 'skeleton-card';
+    skeletonCard.innerHTML = `
+      <div class="skeleton-line skeleton-title"></div>
+      <div class="space-y-2">
+        <div class="skeleton-line skeleton-text medium"></div>
+        <div class="skeleton-line skeleton-text short"></div>
+        <div class="skeleton-line skeleton-text full"></div>
+        <div class="skeleton-line skeleton-text full"></div>
+        <div class="skeleton-line skeleton-text medium"></div>
+        <div class="skeleton-line skeleton-text short"></div>
+        <div class="skeleton-line skeleton-text medium"></div>
+        <div class="skeleton-line skeleton-text full"></div>
+        <div class="skeleton-line skeleton-text medium mt-4"></div>
+      </div>
+      <div class="skeleton-line skeleton-text full mt-2"></div>
+    `;
+    container.appendChild(skeletonCard);
+  }
+  
+  // Cargar datos desde Google App Script
+  fetch('https://script.google.com/macros/s/AKfycbxoY6t07GMxfF7dCAArrINCXgXUc4tSwou48km1rmAPVmAsXVKODSceR5v9EYodUoVm/exec')
+    .then(response => response.json())
+    .then(data => {
+      // Sort data by date in descending order (newest first)
+      data.sort((a, b) => new Date(b.Fecha) - new Date(a.Fecha));
+      
+      // Limpiar los skeletons
+      container.innerHTML = '';
+      
+      data.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md';
+        
+        const fecha = new Date(item.Fecha);
+        const fechaFormat = fecha.toLocaleString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        });
+        
+        const horaEntrega = item['Hora de entrega'];
+        const cuentaRegresiva = document.createElement('div');
+        cuentaRegresiva.className = 'mt-4 p-3 rounded-lg text-center text-sm font-medium bg-green-100';
+        
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+            <h3 class="text-lg font-bold text-pizza-dark">${item.Nombre}</h3>
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">Código: ${item.Código}</span>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="space-y-3">
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Fecha de Pedido</p>
+                <p class="text-sm font-medium text-gray-600">${fechaFormat}</p>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Hora de Entrega</p>
+                <p class="text-sm font-medium text-gray-600">${horaEntrega}</p>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Teléfono</p>
+                <p class="text-sm font-medium text-gray-600">${item.Teléfono}</p>
+              </div>
+            </div>
+            
+            <div class="space-y-3">
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Dirección</p>
+                <p class="text-sm font-medium text-gray-600">${item.Dirección}</p>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Punto de Referencia</p>
+                <p class="text-sm font-medium text-gray-600">${item['Punto de referencia'] || 'No especificado'}</p>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Estado SMS</p>
+                <p class="text-sm font-medium text-gray-600">${item.SMS}</p>
+              </div>
+            </div>
+          </div>
 
-    if (a.querySelector('.cuenta-regresiva').textContent === 'Tiempo Agotado') {
-      return 1;
-    } else if (b.querySelector('.cuenta-regresiva').textContent === 'Tiempo Agotado') {
-      return -1;
-    } else {
-      return totalA - totalB;
-    }
-  });
-  googleAppScriptDataContainer.innerHTML = '';
-  arrayCards.forEach(card => {
-    googleAppScriptDataContainer.appendChild(card);
-  });
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <p class="text-xs text-gray-400 uppercase tracking-wider mb-2">Productos</p>
+            <p class="text-sm font-medium text-gray-600 mb-4">${item.Productos}</p>
+            
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400 uppercase tracking-wider">Total</p>
+              <p class="text-lg font-bold text-pizza-red">${item.Total}</p>
+            </div>
+          </div>
+        `;
+        
+        card.appendChild(cuentaRegresiva);
+        container.appendChild(card);
+        actualizarCuentaRegresiva(cuentaRegresiva, horaEntrega, item.Fecha);
+      });
+      
+      // Ocultar el mensaje de carga
+      loadingMessage.classList.add('hidden');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast('Error al cargar los datos. Por favor, intente nuevamente.', 'error');
+      loadingMessage.classList.add('hidden');
+    });
 }
 
-// Agregar eventos a los botones de filtrado
-document.getElementById('btn-filtro-az').addEventListener('click', ordenarPorNombre);
-document.getElementById('btn-filtro-fecha').addEventListener('click', ordenarPorFecha);
-document.getElementById('btn-filtro-entrega').addEventListener('click', ordenarPorEntrega);
+// Call the cargarDatos function when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  cargarDatos();
+});
 
 function actualizarCuentaRegresiva(cuentaRegresiva, horaEntrega, fecha) {
   // Convertir la hora de entrega a un formato que pueda ser procesado por JavaScript
@@ -227,11 +281,15 @@ function actualizarCuentaRegresiva(cuentaRegresiva, horaEntrega, fecha) {
   const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
   const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
   if (diferencia <= 30 * 60 * 1000) {
+    cuentaRegresiva.classList.remove('bg-green-100');
     cuentaRegresiva.style.background = 'red';
     cuentaRegresiva.style.color = 'white';
   }
   if (diferencia <= 0) {
     cuentaRegresiva.textContent = 'Tiempo Agotado';
+    cuentaRegresiva.classList.remove('bg-green-100');
+    cuentaRegresiva.style.background = 'red';
+    cuentaRegresiva.style.color = 'white';
   } else {
     cuentaRegresiva.textContent = `${horas} horas, ${minutos} minutos, ${segundos} segundos`;
   }
@@ -240,18 +298,9 @@ function actualizarCuentaRegresiva(cuentaRegresiva, horaEntrega, fecha) {
   }, 1000);
 }
 
-// Call the cargarDatos function when the page loads
-cargarDatos();
-
 // **Actualizar**
 	document.getElementById('btn-actualizar').addEventListener('click', function() {
-  const cargandoElement = document.createElement('p');
-  cargandoElement.style.textAlign = 'center';
-  cargandoElement.textContent = 'Cargando...';  
-  document.getElementById('google-app-script-data').innerHTML = '';
-  document.getElementById('google-app-script-data').appendChild(cargandoElement);
-
-  // Call the function to load the data from Google App Script
+  showToast('Actualizando datos...', 'info');
   cargarDatos();
 });
 

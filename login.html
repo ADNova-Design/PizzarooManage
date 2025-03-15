@@ -5,209 +5,224 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pizzaroo Login</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-
-</head>
-
-<style>
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  position: relative;
-}
-
-.container {
-  text-align: center;
-  width: 80%;
-  max-width: 400px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-  margin-bottom: 40px;
-}
-
-.logo img {
-  width: 70%;
-}
-
-.logo h1 {
-  font-size: 36px;
-  margin: 10px 0;
-  color: #333;
-}
-
-a {
-text-decoration: none;
-color: #ff3100ff;;
-}
-
-.input-group {
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.input-group input {
-  width: 80%;
-  padding: 15px;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-size: 16px;
-  padding-left: 45px;
-}
-
-.input-group i {
-  position: absolute;
-  margin-left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #ccc;
-}
-
-.input-group input::placeholder {
-  color: #ccc;
-}
-
-.btn {
-  display: inline-block;
-  width: 60%;
-  padding: 15px;
-  background-color: #ff3100ff;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  text-transform: uppercase;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.btn:hover {
-  background-color: #333;
-}
-
-.notification {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #ff3100ff;
-  color: #fff;
-  display: none;
-}
-
-#spinner {
-  font-size: 20px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  z-index: 9999;
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-</style>
-<body>
-  <div class="container">
-    <div class="logo">
-      <img alt="Pizzaroo Login" src="img/logo.png" width="100%"/>    
-    </div>
-    
-    <form id="login-form">
-      <div class="input-group">
-        <i class="fas fa-user"></i>
-        <input placeholder="Nombre de Usuario o Teléfono" type="text" id="username" name="username" autocomplete="username" required>
-      </div>
-      <div class="input-group">
-        <i class="fas fa-lock"></i>
-        <input placeholder="Contraseña" type="password" id="password" name="password" autocomplete="current-password" required>
-      </div>
-      <button class="btn" id="login-btn">Iniciar Sesión</button>
-	  
-	  <p>
-	  <a href="https://wa.me/18632541732">Crear cuenta de repartidor</a>
-	  </p>
-    </form>
-
-    <div id="notification" class="notification"></div>
-    <div id="spinner" class="spinner">Cargando...</div>
-  </div>
-  
-<script>
-  document.getElementById('login-btn').addEventListener('click', function(event) {
-  event.preventDefault();
-  var username = document.getElementById('username').value;
-  var password = document.getElementById('password').value;
-
-  if (username === '' || password === '') {
-    document.getElementById('notification').innerText = 'Por favor, ingrese su nombre de usuario y contraseña.';
-    document.getElementById('notification').style.display = 'block';
-    return;
-  }
-
-  var data = {
-    username: username,
-    password: password
-  };
-
-  // Mostrar el spinner de carga
-  document.getElementById('spinner').style.display = 'block';
-
-  fetch('https://script.google.com/macros/s/AKfycbxpQI3ih_IqWRe4Pk_rrTydN2QfThS7IP7ZM7EAjSD1G1UGexwtOCgLiPTzN2yXxVD_/exec', {
-    method: 'POST',
-    mode: 'cors',
-    body: JSON.stringify(data)
-  })
-  .then(response => {
-    if (!response.ok) {
-      if (response.status && response.statusText) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      } else {
-        try {
-          return response.text();
-        } catch (error) {
-          throw new Error('Error al obtener la respuesta del servidor');
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pizza-red': '#ff3100',
+          },
+          animation: {
+            'slide-down': 'slide-down 0.3s ease-out',
+            'fade-out': 'fade-out 0.5s ease-out',
+          },
+          keyframes: {
+            'slide-down': {
+              '0%': { transform: 'translateY(-100%)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            'fade-out': {
+              '0%': { opacity: '1' },
+              '100%': { opacity: '0' },
+            },
+          },
         }
       }
     }
+  </script>
+</head>
 
-    return response.text();
-  })
-  .then(data => {
-    // Ocultar el spinner de carga
-    document.getElementById('spinner').style.display = 'none';
+<body class="font-sans bg-gray-100 flex justify-center items-center min-h-screen m-0 relative">
+  <!-- Sistema de Notificaciones -->
+  <div id="notification-container" class="fixed top-4 right-4 left-4 z-50 flex flex-col items-center gap-2">
+    <!-- Las notificaciones se insertarán aquí dinámicamente -->
+  </div>
 
-    if (data === "success") {
-      // Guardar la información de inicio de sesión en el almacenamiento local
-      localStorage.setItem('usuario', JSON.stringify({
-        username: username,
-        password: password
-      }));
-      window.location.href = 'index.html';
-    } else {
-      document.getElementById('notification').innerText = 'Credenciales inválidas. Por favor, inténtalo de nuevo.';
-      document.getElementById('notification').style.display = 'block';
+  <div class="text-center w-4/5 max-w-md p-5 border border-gray-200 rounded-lg shadow-md bg-white">
+    <div class="mb-10">
+      <img src="img/logo.png" alt="Pizzaroo Login" class="w-[70%] mx-auto"/>    
+    </div>
+    
+    <form id="login-form" class="space-y-5">
+      <div class="relative flex items-center">
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          autocomplete="username" 
+          required
+          placeholder="Nombre de Usuario o Teléfono"
+          class="w-full py-3 pl-4 pr-12 border border-gray-200 rounded-lg shadow-sm text-base focus:ring-2 focus:ring-pizza-red focus:outline-none focus:border-transparent"
+        >
+        <div class="absolute right-4 text-gray-400">
+          <i class="fas fa-user"></i>
+        </div>
+      </div>
+      
+      <div class="relative flex items-center">
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          autocomplete="current-password" 
+          required
+          placeholder="Contraseña"
+          class="w-full py-3 pl-4 pr-12 border border-gray-200 rounded-lg shadow-sm text-base focus:ring-2 focus:ring-pizza-red focus:outline-none focus:border-transparent"
+        >
+        <button 
+          type="button"
+          class="absolute right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
+          onclick="togglePassword()"
+          title="Mostrar/Ocultar contraseña"
+          aria-label="Mostrar/Ocultar contraseña"
+        >
+          <i id="password-toggle" class="fas fa-eye"></i>
+        </button>
+      </div>
+      
+      <button 
+        class="w-[60%] py-3 px-4 bg-pizza-red text-white border-none rounded-lg text-base uppercase cursor-pointer shadow-md hover:bg-gray-800 transition-colors duration-300"
+        id="login-btn"
+      >
+        Iniciar Sesión
+      </button>
+      
+      <p class="mt-4">
+        <a href="https://wa.me/18632541732" class="text-pizza-red hover:text-gray-800 transition-colors duration-300">
+          Crear cuenta de repartidor
+        </a>
+      </p>
+    </form>
+
+    <div id="spinner" class="text-xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden z-50 bg-white bg-opacity-80 p-5 rounded-lg shadow-md">
+      Cargando...
+    </div>
+  </div>
+  
+<script>
+  // Función para mostrar notificaciones
+  function showNotification(message, type = 'error') {
+    const container = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    
+    // Configurar clases base
+    let baseClasses = 'w-full max-w-md p-4 rounded-lg shadow-lg animate-slide-down flex items-center justify-between';
+    let icon = '';
+    
+    // Configurar estilos según el tipo
+    switch(type) {
+      case 'error':
+        baseClasses += ' bg-red-100 text-red-800 border-l-4 border-red-500';
+        icon = '<i class="fas fa-exclamation-circle text-red-500 mr-2"></i>';
+        break;
+      case 'success':
+        baseClasses += ' bg-green-100 text-green-800 border-l-4 border-green-500';
+        icon = '<i class="fas fa-check-circle text-green-500 mr-2"></i>';
+        break;
+      case 'warning':
+        baseClasses += ' bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500';
+        icon = '<i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>';
+        break;
     }
-  })
-  .catch(error => {
-    // Ocultar el spinner de carga
-    document.getElementById('spinner').style.display = 'none';
+    
+    notification.className = baseClasses;
+    notification.innerHTML = `
+      <div class="flex items-center">
+        ${icon}
+        <span>${message}</span>
+      </div>
+      <button onclick="this.parentElement.remove()" class="ml-4 text-gray-500 hover:text-gray-700">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+    
+    container.appendChild(notification);
+    
+    // Eliminar la notificación después de 5 segundos
+    setTimeout(() => {
+      notification.classList.add('animate-fade-out');
+      setTimeout(() => notification.remove(), 500);
+    }, 5000);
+  }
 
-    console.error('Error:', error);
-    document.getElementById('notification').innerText = 'Ocurrió un error. Por favor, inténtalo de nuevo más tarde.';
-    document.getElementById('notification').style.display = 'block';
+  document.getElementById('login-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+
+    if (username === '' || password === '') {
+      showNotification('Por favor, ingrese su nombre de usuario y contraseña.', 'warning');
+      return;
+    }
+
+    var data = {
+      username: username,
+      password: password
+    };
+
+    // Mostrar el spinner de carga
+    document.getElementById('spinner').classList.remove('hidden');
+
+    fetch('https://script.google.com/macros/s/AKfycbxpQI3ih_IqWRe4Pk_rrTydN2QfThS7IP7ZM7EAjSD1G1UGexwtOCgLiPTzN2yXxVD_/exec', {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+        if (response.status && response.statusText) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        } else {
+          try {
+            return response.text();
+          } catch (error) {
+            throw new Error('Error al obtener la respuesta del servidor');
+          }
+        }
+      }
+      return response.text();
+    })
+    .then(data => {
+      // Ocultar el spinner de carga
+      document.getElementById('spinner').classList.add('hidden');
+
+      if (data === "success") {
+        showNotification('¡Inicio de sesión exitoso! Redirigiendo...', 'success');
+        localStorage.setItem('usuario', JSON.stringify({
+          username: username,
+          password: password
+        }));
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1000);
+      } else {
+        showNotification('Credenciales inválidas. Por favor, inténtalo de nuevo.', 'error');
+      }
+    })
+    .catch(error => {
+      // Ocultar el spinner de carga
+      document.getElementById('spinner').classList.add('hidden');
+      console.error('Error:', error);
+      showNotification('Ocurrió un error. Por favor, inténtalo de nuevo más tarde.', 'error');
+    });
   });
-});
+
+  // Función para alternar la visibilidad de la contraseña
+  function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('password-toggle');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      passwordToggle.classList.remove('fa-eye');
+      passwordToggle.classList.add('fa-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      passwordToggle.classList.remove('fa-eye-slash');
+      passwordToggle.classList.add('fa-eye');
+    }
+  }
 </script>
 </body>
 </html>

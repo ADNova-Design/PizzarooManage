@@ -58,3 +58,57 @@ window.onload = function() {
   // Configurar la recarga de datos cada 1 minuto (60000 milisegundos)
   setInterval(fetchData, 30000);
 };
+
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.tab');
+  const statsContainer = document.getElementById('total');
+
+  // Función para actualizar los datos según el período seleccionado
+  function actualizarDatos(periodo) {
+    const ordersData = document.getElementById('orders-data');
+    const incomeData = document.getElementById('income-data');
+    
+    // Simulación de datos para cada período
+    const datos = {
+      'total': { orders: '1,234', income: '$45,678' },
+      'diario': { orders: '42', income: '$1,560' },
+      'semanal': { orders: '286', income: '$10,450' },
+      'mensual': { orders: '890', income: '$32,780' }
+    };
+
+    // Animación de los números
+    animateValue(ordersData, datos[periodo].orders);
+    animateValue(incomeData, datos[periodo].income);
+  }
+
+  // Función para animar los valores
+  function animateValue(element, value) {
+    element.style.opacity = '0';
+    setTimeout(() => {
+      element.textContent = value;
+      element.style.opacity = '1';
+    }, 200);
+  }
+
+  // Manejar clics en las tabs
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remover clase activa de todas las tabs
+      tabs.forEach(t => {
+        t.classList.remove('active', 'bg-white', 'shadow-sm');
+        t.classList.add('inactive', 'hover:bg-gray-50');
+      });
+
+      // Agregar clase activa a la tab seleccionada
+      tab.classList.remove('inactive', 'hover:bg-gray-50');
+      tab.classList.add('active', 'bg-white', 'shadow-sm');
+
+      // Actualizar datos según el período
+      const periodo = tab.getAttribute('data-period');
+      actualizarDatos(periodo);
+    });
+  });
+
+  // Inicializar con los datos totales
+  actualizarDatos('total');
+});

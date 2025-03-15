@@ -1,22 +1,22 @@
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f5f5f5;           
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .header {
     text-align: center;
     padding: 20px 0 2px;
+    width: 100%;
 }
 
 .category {
-    margin-left: 5%;
+    padding: 0 5%;
     margin-bottom: 1px;
-    font-size: 24px;
+    font-size: clamp(18px, 4vw, 24px);
     color: #333;		      
 }	
 
@@ -26,29 +26,36 @@ body {
 
 .header h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: clamp(18px, 4vw, 24px);
     color: #333;
 }
 
 .tabs {
     display: flex;
     overflow-x: auto;
-    white-space: nowrap;
-    justify-content: left;
-    margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 0 5px;
+}
+
+.tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .hidden {
-    display: none; /* Usado para ocultar secciones */
+    display: none;
 }
 
 .tab {
-    padding: 10px 20px;
-    border-radius: 20px;
-    margin: 0 5px;
+    padding: 8px 16px;
+    border-radius: 16px;
+    margin: 0 4px;
     cursor: pointer;
     color: #fff;
-    transition: background-color 0.3s ease; /* Transición suave para el fondo */
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .tab.active {
@@ -62,17 +69,18 @@ body {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
-    gap: 5px; /* Espacio entre las tarjetas */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    padding: 0 16px;
 }
 
 .stat-card {
-    margin: 10%;
-    padding: 10px;
-    border-radius: 20px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
     color: #fff;
     text-align: center;
-    transition: background-color 0.3s ease; /* Transición suave para el fondo */
+    transition: all 0.3s ease;
 }
 
 .stat-card h2 {
